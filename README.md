@@ -1,5 +1,5 @@
 # Grape on Rack Starter Kit
-Get start api developing faster
+Get start api developing faster and completed user system
 
 ## Ruby Version
 ```
@@ -18,6 +18,7 @@ Get start api developing faster
 - bcrypt
 - mina deployment
 - rspec and factory_girl
+- completed user system(login with phone register with phone)
 
 ## Setup
 
