@@ -1,0 +1,34 @@
+# Postgresql 9.4
+#   gem install pg
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'pg'
+#
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  reconnect: false
+  pool: 5
+  host: localhost
+
+development:
+  <<: *default
+  database: 
+  username: 
+  password: 
+  port: 5432
+
+production:
+  <<: *default
+  database: 
+  username: 
+  password: 
+  port: 5432
+
+
+#production:
+#  <<: *default
+#  database: party_star
+#  username: superstar
+#  password: b49d7fe70f702f33b5ed03fe25d3c98e15efa17457913964e418f221b9696350

@@ -1,0 +1,13 @@
+
+default: &default
+  PC_ID: 
+  PC_KEY: 
+  IOS_ID: 
+  IOS_KEY: 
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+

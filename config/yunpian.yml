@@ -1,0 +1,14 @@
+# YunPian Sms Service
+# https://www.yunpian.com
+
+default: &default
+  ApiKey: 
+  CodeExpiresIn: 60
+  # SendInterval: 30
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+
