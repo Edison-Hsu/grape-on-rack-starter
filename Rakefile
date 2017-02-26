@@ -1,4 +1,3 @@
-require 'active_record'
 require 'active_record_migrations'
 
 ActiveRecordMigrations.configure do |c|
@@ -6,9 +5,12 @@ ActiveRecordMigrations.configure do |c|
 end
 ActiveRecordMigrations.load_tasks
 
-task :preload do
-  require File.expand_path('config/environment', File.dirname(__FILE__))
-  require File.expand_path('app/api/root', File.dirname(__FILE__))
+namespace :app do
+  desc 'generate jwt secret'
+  task :gen_jwt_secret do
+    require 'SecureRandom'
+    p SecureRandom.base64(128)
+  end
 end
 
 namespace :grape do
