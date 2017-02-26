@@ -1,4 +1,5 @@
 # Grape on Rack Starter Kit
+Get start api developing faster
 
 ## Ruby Version
 ```
