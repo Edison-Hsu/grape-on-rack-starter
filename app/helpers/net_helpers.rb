@@ -1,5 +1,6 @@
-module NetHelpers
+require 'net/http'
 
+module NetHelpers
   def get_https(url)
     uri = URI(url)
     request = Net::HTTP::Get.new uri

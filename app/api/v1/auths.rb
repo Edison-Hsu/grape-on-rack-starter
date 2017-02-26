@@ -3,19 +3,19 @@ class V1
     helpers YunpianHelpers
     helpers ::AuthHelpers
 
-    helpers do
-      def current_geetest(channel)
-        geetest = ENV['GEETEST_INSTANCE'] || begin
-          id = ENV['GEETEST_PC_ID']
-          key = ENV['GEETEST_PC_KEY']
-          if channel == 'ios'
-            id = ENV['GEETEST_IOS_ID']
-            key = ENV['GEETEST_IOS_KEY']
-          end
-          geetest = Geetest.new(id, key)
-        end
-      end
-    end
+    # helpers do
+    #   def current_geetest(channel)
+    #     geetest = ENV['GEETEST_INSTANCE'] || begin
+    #       id = ENV['GEETEST_PC_ID']
+    #       key = ENV['GEETEST_PC_KEY']
+    #       if channel == 'ios'
+    #         id = ENV['GEETEST_IOS_ID']
+    #         key = ENV['GEETEST_IOS_KEY']
+    #       end
+    #       geetest = Geetest.new(id, key)
+    #     end
+    #   end
+    # end
 
     class TokenEntity < Grape::Entity
       expose :access_token
@@ -23,16 +23,16 @@ class V1
     end
 
     resource 'auth' do
-      desc '-----get capcha------'
-      params do
-        optional :channel,
-                 type: String,
-                 values: %w(ios web),
-                 default: 'web'
-      end
-      get 'capcha/register' do
-        current_geetest(params[:channel]).pre_process
-      end
+      # desc '-----get capcha------'
+      # params do
+      #   optional :channel,
+      #            type: String,
+      #            values: %w(ios web),
+      #            default: 'web'
+      # end
+      # get 'capcha/register' do
+      #   current_geetest(params[:channel]).pre_process
+      # end
 
       desc '-------send sms code----------'
       params do
@@ -46,19 +46,21 @@ class V1
         requires :action,
                  type: String,
                  values: ['register', 'reset']
-        optional :geetest_challenge,
-                 type: String,
-                 desc: 'geetest_challenge'
-        optional :geetest_validate,
-                 type: String,
-                 desc: 'geetest_validate'
-        optional :geetest_seccode,
-                 type: String,
-                 desc: 'geetest_seccode'
+        # optional :geetest_challenge,
+        #          type: String,
+        #          desc: 'geetest_challenge'
+        # optional :geetest_validate,
+        #          type: String,
+        #          desc: 'geetest_validate'
+        # optional :geetest_seccode,
+        #          type: String,
+        #          desc: 'geetest_seccode'
       end
       post 'sms/code' do
         # raise Errors::SmsValidateFailedError if !current_geetest(params[:channel]).success_validate(params[:geetest_challenge], params[:geetest_validate], params[:geetest_seccode])
-        send_sms(params)
+        send_sms(phone: params[:phone], 
+                 channel: params[:channel],
+                 action: params[:action])
       end
 
       desc '--------login with phone number--------'
@@ -100,29 +102,12 @@ class V1
       end
       post 'register/phone' do
         raise Errors::PhoneDuplicationRegisterError if User.exists?(phone: params[:phone])
-        verify_sms!(params)
+        verify_sms!(phone: params[:phone], code: params[:code])
         user = User.create_account(params)
         token = build_user_token(user.id)
         present token, with: TokenEntity
       end
 
-      desc '-------reset password with sms code and mobile'
-      params do
-        requires :phone,
-                 type: String,
-                 desc: 'phone number'
-        requires :code,
-                 type: String
-        requires :password,
-                 type: String
-      end
-      post 'password/reset' do
-        verify_sms!(params)
-        user = User.find_by(phone: params[:phone])
-        user.password = params[:password]
-        token = build_user_token(user.id)
-        present token, with: TokenEntity
-      end
 
       desc '--------logout---------'
       post 'logout' do

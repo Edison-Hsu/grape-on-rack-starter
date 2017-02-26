@@ -40,6 +40,10 @@ class V1
       SmsValidateFailedError: Error.new(
         42_008,
         "Sms validate Failed"
+      ),
+      PhoneNumberNotMatchError: Error.new(
+        42_009,
+        "phone number not match"
       )
     }
 

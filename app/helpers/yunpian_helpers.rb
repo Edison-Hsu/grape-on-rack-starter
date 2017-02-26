@@ -29,7 +29,7 @@ module YunpianHelpers
     {code: resp["code"], message: resp["msg"] || resp["detail"]}
   end
 
-  def send_sms(params)
+  def send_sms(phone:, channel:, action:)
     # generate code
     code = [*10000..99999].sample
 
@@ -42,26 +42,28 @@ module YunpianHelpers
 
     # write record
     SmsRecord.create(
-      mobile: params[:phone],
+      mobile: phone,
       code: code,
       result: resp,
-      channel: params[:channel],
-      action: params[:action],
+      channel: channel,
+      action: action,
       expired_at: Time.now + expires_in
     )
 
     respond(resp)
   end
 
-  def verify_sms!(params)
+  # phone => phone number
+  # code => sms code
+  def verify_sms!(phone:, code:)
     # query sms code by mobile number
     record = SmsRecord
-      .where(mobile: params[:phone], verified_at: nil)
+      .where(mobile: phone, verified_at: nil)
       .order('created_at desc')
       .first
 
     raise V1::Errors::SendSmsCodeFirstError if record.nil?
-    valid = (record.code == params[:code] && record.expired_at > Time.now)
+    valid = (record.code == code && record.expired_at > Time.now)
     raise V1::Errors::SmsCodeWrongOrExpiredError if !valid
     record.update(verified_at: Time.now)
   end

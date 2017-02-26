@@ -2,6 +2,9 @@ class V1
   class Users < Grape::API
     include Auth::JwtMixin
 
+    helpers ::AuthHelpers
+    helpers YunpianHelpers
+
     class ProfileEntity < Grape::Entity
       expose :id, as: :user_id
       expose :nickname do |user| user.profile.to_h['nickname'].to_s end
@@ -10,8 +13,34 @@ class V1
     end
 
     # MARK - APIs 
-    resource 'users' do
-      namespace ':user_id/profile' do
+    resource 'users/:user_id' do
+      namespace 'password' do
+
+        before do
+          warden.authenticate!
+        end
+
+        desc '-------reset password with sms code and mobile'
+        params do
+          requires :phone,
+                   type: String,
+                   desc: 'phone number'
+          requires :code,
+                   type: String
+          requires :password,
+                   type: String
+        end
+        patch do
+          raise Errors::NotAuthorizedError if current_user.id != params[:user_id]
+          raise Errors::PhoneNumberNotMatchError if current_user.phone != params[:phone]
+          verify_sms!(phone: params[:phone], code: params[:code])
+          current_user.password = params[:password]
+          token = build_user_token(current_user.id)
+          present token, with: V1::Auths::TokenEntity
+        end
+      end
+
+      namespace 'profile' do
 
         before do
           warden.authenticate!
