@@ -7,9 +7,6 @@ class V1
       expose :nickname do |user| user.profile.to_h['nickname'].to_s end
       expose :introduce do |user| user.profile.to_h['introduce'].to_s end
       expose :avatar_url do |user| user.profile.to_h['avatar_url'].to_s end
-      expose :followings, if: lambda { |_,opts| opts[:followings] } do |_, opts| opts[:followings] end
-      expose :followers, if: lambda { |_,opts| opts[:followings] } do |_, opts| opts[:followers] end
-      expose :followed, if: lambda { |_,opts| opts[:followings] } do |_, opts| opts[:followed] end
     end
 
     # MARK - APIs 
