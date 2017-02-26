@@ -82,7 +82,7 @@ class V1
 
       desc '-------register with sms code and mobile'
       params do
-        requires :username,
+        optional :username,
                  type: String,
                  regexp: /.+{6,32}/
         requires :password,
