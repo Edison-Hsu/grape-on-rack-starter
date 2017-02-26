@@ -29,3 +29,14 @@ Get start api developing faster
 cd REPO_FOLDER
 rm -rf .git/
 ```
+
+## prerequirment
+
+- RVM
+
+## Start Server
+
+```
+bundle install
+puma
+```
