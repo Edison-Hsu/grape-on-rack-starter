@@ -4,6 +4,5 @@ class V1 < Grape::API
 
   mount Users
   mount Auths
-  mount Chatrooms
 
 end
